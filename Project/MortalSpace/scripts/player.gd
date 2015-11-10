@@ -3,9 +3,9 @@ extends KinematicBody2D
 
 var player_speed = 200
 
-# member variables here, example:
-# var a=2
-# var b="textvar"
+
+
+var tmp = preload("res://scripts/CommonChildAcces.gd") 
 
 func _ready():
 	set_fixed_process(true)
@@ -16,6 +16,7 @@ func _follow_mouse(delta_t, player_position):
 	var delta_x         = player_position.x - mouse_pos.x
 	var delta_y         = player_position.y - mouse_pos.y
 	var angle           = atan2(delta_x, delta_y)
+	
 	
 	get_node(".").set_rot(angle)
 	

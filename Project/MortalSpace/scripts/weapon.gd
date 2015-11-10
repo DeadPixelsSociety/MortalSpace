@@ -16,7 +16,6 @@ func fire(delta):
 		var ammo_node = ammo_scene.instance()
 		ammo_node.set_position_before_start(get_node(".").get_global_pos(), get_node("..").get_rot())
 		get_node("/root/game").add_child(ammo_node)
-		print("Bullet shooted")
 		time_past = 0
 	else:
 		time_past += delta
@@ -25,7 +24,6 @@ func _process(delta):
 	if(Input.is_mouse_button_pressed(BUTTON_LEFT) and get_node("..") extends player_class ):
 		fire(delta)
 		counter += 1
-		print("click received and counter = ", counter)
 
 
 func _ready():

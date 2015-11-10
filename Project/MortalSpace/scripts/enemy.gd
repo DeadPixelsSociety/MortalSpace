@@ -1,9 +1,7 @@
 
 extends KinematicBody2D
 
-# member variables here, example:
-# var a=2
-# var b="textvar"
+
 
 const TIME_TO_MOVE = 2.0
 const TIME_TO_SHOOT = 2.0
@@ -13,6 +11,7 @@ var time = 0.0
 var is_time_to_move = true
 var trajectory = Vector2(0,0)
 var enemy_pos = Vector2(0,0)
+var enemy_life = 10
 
 func _shoot(delta):
 	get_node("enemy_weapon").fire(delta)
@@ -38,6 +37,9 @@ func _fixed_process(delta):
 	var angle           = atan2(delta_x, delta_y)
 	
 	get_node(".").set_rot(angle)
+	
+	if(enemy_life<=0):
+		get_node(".").queue_free()
 
 	if(true == is_time_to_move):
 		_move(delta)
@@ -47,16 +49,19 @@ func _fixed_process(delta):
 			time = 0.0
 			is_time_to_move = false
 	else:
-		_shoot(delta)
+		#_shoot(delta)
 		if(time < TIME_TO_SHOOT):
 			time += delta 
-			print("Je tire")
 		else:
 			time = 0.0
 			is_time_to_move = true
+
+func is_shooted():
+	enemy_life = enemy_life -1
 
 func _ready():
 	trajectory.x = randf()
 	trajectory.y = randf()
 	enemy_pos = get_node(".").get_global_pos()
+	add_to_group("enemies")
 	set_fixed_process(true)
