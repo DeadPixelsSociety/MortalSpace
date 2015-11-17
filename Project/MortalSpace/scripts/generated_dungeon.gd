@@ -32,6 +32,7 @@ func _ready():
 	for i in range(13):
 		for j in range(13):
 			tilemap.set_cell(i,j,0,false,false,false)
+	tilemap.set_cell(3,3,1,false,false,false)
 	
 	var tileset = TileSet.new()
 	tileset.set_path("res://tileset/tile_set_vaisseau_test.res")
