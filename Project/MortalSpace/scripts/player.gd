@@ -3,16 +3,12 @@ extends KinematicBody2D
 
 var player_speed = 200
 
-
-
-var tmp = preload("res://scripts/CommonChildAcces.gd") 
-
 func _ready():
 	set_fixed_process(true)
 	
 
 func _follow_mouse(delta_t, player_position):
-	var mouse_pos        = get_viewport().get_mouse_pos()
+	var mouse_pos       = self.get_global_mouse_pos()
 	var delta_x         = player_position.x - mouse_pos.x
 	var delta_y         = player_position.y - mouse_pos.y
 	var angle           = atan2(delta_x, delta_y)
@@ -23,7 +19,7 @@ func _follow_mouse(delta_t, player_position):
 	pass
 
 func _fixed_process(delta):
-	var player_position = get_node(".").get_pos()
+	var player_position = get_node(".").get_global_pos()
 	var is_moving       = false
 	
 	var rotation        = Matrix32()
