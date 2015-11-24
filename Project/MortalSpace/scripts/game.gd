@@ -9,6 +9,7 @@ func generate_bullet():
 	add_child(ammo_scene.instance())
 
 func _ready():
+	get_node("menu").game_is_starting()
 	set_fixed_process(true)
 
 

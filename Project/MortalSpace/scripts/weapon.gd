@@ -22,8 +22,9 @@ func fire(delta):
 
 func _process(delta):
 	if(Input.is_mouse_button_pressed(BUTTON_LEFT) and get_node("..") extends player_class ):
-		fire(delta)
-		counter += 1
+		if(get_node("/root/player_variable").get_ammo() > 0):	
+			fire(delta)
+			get_node("/root/player_variable").use_ammo(1)
 
 
 func _ready():
