@@ -17,6 +17,8 @@ func _on_start_pressed():
 	difficulty = get_node("/root/game_variable").get_difficulty()
 	save_name  = get_node("savegame_name_part").get_node("savegame_name").get_text()
 	
+	print(save_name)
+	
 	#verify information
 	if(difficulty_constant.NONE == difficulty):
 		print("Vous devez choisir une dificulté avant de démarrer")
@@ -28,11 +30,14 @@ func _on_start_pressed():
 	
 	if(difficulty_constant.NONE != difficulty and "" != save_name):
 		#save information
-		get_node("/root/game_variable").valid_diffculty()
-		
-		
-		#start game
-		get_tree().change_scene("res://scenes/game.scn")
+		get_node("/root/savedata_manager").create_path_with_game_name(save_name)
+		if(true == get_node("/root/savedata_manager").save_data(true)):
+			
+			#start game
+			get_node("/root/game_variable").start_game()
+			get_tree().change_scene("res://scenes/game.scn")
+		else:
+			print("Impossible de sauvegarder la partie, le nom de partie doit probablement déjà exister")
 	
 	pass
 

@@ -11,14 +11,15 @@ func use_ammo(used_ammo):
 
 func serialize():
 	var save_data = {
-			"ammo":_ammo
-		}
+			node_path = get_path(),
+			ammo=_ammo
+	}
+	return save_data
 
 func deserialize(data):
 	_ammo = data["ammo"]
 
 func _ready():
-	# Initialization here
-	pass
-
+	get_node("/root/register_node").add_persistent_data(self)
+	
 

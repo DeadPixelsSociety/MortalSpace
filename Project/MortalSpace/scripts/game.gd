@@ -9,7 +9,8 @@ func generate_bullet():
 	add_child(ammo_scene.instance())
 
 func _ready():
-	get_node("menu").game_is_starting()
+	get_node("/root/game_variable").start_game()
+	print("ammo number = ", get_node("/root/player_variable").get_ammo())
 	set_fixed_process(true)
 
 
