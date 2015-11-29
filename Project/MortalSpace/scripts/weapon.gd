@@ -22,12 +22,12 @@ func fire(delta):
 		time_past += delta
 		return false
 
-
+#TODO Dissocier le nombre de balles consommées par coût et le nombre de balles réellement tirées, peut être adapter les dégats en fonction
 func _process(delta):
 	if(Input.is_mouse_button_pressed(BUTTON_LEFT) and get_node("..") extends player_class ):
-		if(get_node("/root/player_variable").get_ammo() > 0):	
+		if(get_node("/root/equipement_in_dungeon").get_ammo_in_weapon() > 0):	
 			if(true == fire(delta)):
-				get_node("/root/player_variable").use_ammo(1)
+				get_node("/root/equipement_in_dungeon").use_ammo_in_weapon(1)
 
 
 func _ready():

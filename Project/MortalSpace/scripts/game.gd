@@ -10,6 +10,7 @@ func generate_bullet():
 
 func _ready():
 	get_node("/root/game_variable").start_game()
+	get_node("/root/equipement_in_dungeon").start_new_dungeon() #TODO: move this when vessels to dungeon function is implemented
 	print("ammo number = ", get_node("/root/player_variable").get_ammo())
 	set_fixed_process(true)
 
