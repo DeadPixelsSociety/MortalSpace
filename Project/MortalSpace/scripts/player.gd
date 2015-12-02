@@ -3,6 +3,7 @@ extends KinematicBody2D
 
 var player_speed = 200
 
+
 func _ready():
 	set_fixed_process(true)
 	
@@ -24,6 +25,9 @@ func _fixed_process(delta):
 	
 	var rotation        = Matrix32()
 	
+		#Tester si un corps est dans une zone activable
+	if("" != node_which_active_triger):
+		get_node("/root/game/dungeon").activate()
 	
 	#press Z
 	if(Input.is_action_pressed("player_move_up") and not Input.is_action_pressed("player_move_down")):
