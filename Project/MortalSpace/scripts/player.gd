@@ -25,9 +25,10 @@ func _fixed_process(delta):
 	
 	var rotation        = Matrix32()
 	
-		#Tester si un corps est dans une zone activable
-	if("" != node_which_active_triger):
-		get_node("/root/game/dungeon").activate()
+	#Player can activate a trigger with E:
+	if(Input.is_action_pressed("player_action")):
+		get_node("/root/game/dungeon").activate_trigger()
+
 	
 	#press Z
 	if(Input.is_action_pressed("player_move_up") and not Input.is_action_pressed("player_move_down")):
