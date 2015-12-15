@@ -5,15 +5,12 @@ extends "res://scripts/action_area2D.gd"
 # var a=2
 # var b="textvar"
 
-func _on_approaching_board(body):
-	print("Enter")
-	self._change_current_action_trigger()
+func _on_entering_area(body):
+	._on_entering_area(body)
 	get_node("information_board").popup()
 
-func _on_board_leaving(body):
-	print("Out")
-	self.desactivate()
-	self._reset_trigger()
+func _on_leaving_area(body):
+	._on_leaving_area(body) #the dot here call the parent method. 
 	get_node("information_board").hide()
 
 func action():
@@ -25,10 +22,5 @@ func action():
 	pass
 	#TODO change dungeon from vessel to new dungeon
 
-func _ready():
-	self.connect("body_enter", self, "_on_approaching_board")
-	self.connect("body_exit", self, "_on_board_leaving")
-	set_process_input(true)
-	pass
 
 

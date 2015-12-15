@@ -26,8 +26,19 @@ func action():
 	#Do nothing here, this sould be a virtual fonction, but I don't know how to write a virutal function with gdscript
 	pass
 
+
+func _on_entering_area(body):
+	print("Enter")
+	self._change_current_action_trigger()
+
+func _on_leaving_area(body):
+	print("Out")
+	self.desactivate()
+	self._reset_trigger()
+
 func _ready():
-	# Initialization here
-	pass
+	self.connect("body_enter", self, "_on_entering_area")
+	self.connect("body_exit", self, "_on_leaving_area")
+	set_process_input(true)
 
 
