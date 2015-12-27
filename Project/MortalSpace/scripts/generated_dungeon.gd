@@ -8,6 +8,9 @@ extends Node2D
 
 
 func _ready():
+
+	# Initialization here
+	#get_node("generated_dungeon_theme").play("ambiance")
 	#var tileset = TileSet.new()
 	#tileset.set_path("res://tileset/tile_set_vaisseau_test.res")
 	#tileset.

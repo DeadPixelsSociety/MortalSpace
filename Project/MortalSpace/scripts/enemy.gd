@@ -1,5 +1,5 @@
 
-extends KinematicBody2D
+extends "res://scripts/character.gd"
 
 
 
@@ -56,7 +56,7 @@ func _fixed_process(delta):
 			time = 0.0
 			is_time_to_move = true
 
-func is_shooted():
+func get_shot():
 	enemy_life = enemy_life -1
 
 func _ready():

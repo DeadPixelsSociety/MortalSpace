@@ -57,7 +57,7 @@ func _ready():
 	get_node("load_button").connect("pressed", self, "_on_load_button_pressed")
 	get_node("option_button").connect("pressed", self, "_on_option_button_pressed")
 	get_node("quit_button").connect("pressed", self, "_on_quit_button_pressed")
-	get_node("introduction_sample").play("Benny-hill-theme")
+
 	set_process_input(true)
 
 

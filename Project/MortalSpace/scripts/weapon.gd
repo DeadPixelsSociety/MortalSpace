@@ -5,14 +5,15 @@ var ammo_scene   = preload("res://scenes/ammo.scn")
 
 var game
 
-var speed_rate = 0.05
-var time_past  = 0.05
+var speed_rate = 0.4
+var time_past  = 0.4
 
 var counter = 0
 
 func fire(delta):
 	if(time_past >= speed_rate):
 		get_node("anim_shoot").play("shoot_anim")
+		get_node("weapon_shoot_sound").play("shot")
 		var ammo_node = ammo_scene.instance()
 		ammo_node.set_position_before_start(get_node(".").get_global_pos(), get_node("..").get_rot())
 		get_node("/root/game").add_child(ammo_node)

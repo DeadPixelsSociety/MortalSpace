@@ -1,5 +1,5 @@
 
-extends KinematicBody2D
+extends "res://scripts/character.gd"
 
 var player_speed = 200
 
@@ -19,16 +19,11 @@ func _follow_mouse(delta_t, player_position):
 	
 	pass
 
-func _fixed_process(delta):
-	var player_position = get_node(".").get_global_pos()
+func _movement(delta):
+	var player_position = self.get_global_pos()
 	var is_moving       = false
 	
 	var rotation        = Matrix32()
-	
-	#Player can activate a trigger with E:
-	if(Input.is_action_pressed("player_action")):
-		get_node("/root/game/dungeon").activate_trigger()
-
 	
 	#press Z
 	if(Input.is_action_pressed("player_move_up") and not Input.is_action_pressed("player_move_down")):
@@ -57,4 +52,16 @@ func _fixed_process(delta):
 	
 	get_node(".").move_to(player_position)
 	_follow_mouse(delta, player_position)
+
+
+func _fixed_process(delta):
+	
+	_movement(delta)
+	
+	#Player can activate a trigger with E:
+	if(Input.is_action_pressed("player_action")):
+		get_node("/root/game/dungeon").activate_trigger()
+
+	
+	
 

@@ -6,9 +6,10 @@ extends KinematicBody2D
 # var b="textvar"
 
 var enemy_class = preload("res://scripts/enemy.gd") 
+var player_class = preload("res://scripts/player.gd") 
 
 # bullet speed in pixel.s-1
-var bullet_speed = 400
+var bullet_speed = 800
 
 var bullet_position   = Vector2(0.0, 0.0)
 var bullet_angle      = 0.0
@@ -32,7 +33,10 @@ func _fixed_process(delta):
 	if(is_colliding() ):
 		if(get_collider() extends enemy_class):
 			var myob = get_collider()
-			myob.is_shooted()
+			myob.get_shot()
+		if(get_collider() extends player_class):
+			var myob = get_collider()
+			myob.get_shot()
 		get_node(".").queue_free()
 	
 

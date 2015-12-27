@@ -1,7 +1,7 @@
 
 extends Node
 
-var _ammo = 100
+var _ammo = 1000
 
 func get_ammo():
 	return _ammo
