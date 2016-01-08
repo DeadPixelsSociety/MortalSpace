@@ -1,26 +1,50 @@
 
 extends "res://scripts/character.gd"
 
-var player_speed = 200
+#var resolution_constant = preload("res://scripts/resolution_constant.gd")
 
+var player_speed = 200
+#var basic_resolution_ratio = 0
 
 func _ready():
+	#basic_resolution_ratio = float(resolution_constant.RESOLUTION_X) / float(resolution_constant.RESOLUTION_Y)
+	#var device_resolution = get_viewport().get_rect().size
+	#game_resolution_ratio = Vector2(resolution_constant.RESOLUTION_X/device_resolution.x, resolution_constant.RESOLUTION_Y/device_resolution.y)
+	self.get_node("camera").make_current()
 	set_fixed_process(true)
 	
 
-func _follow_mouse(delta_t, player_position):
-	var mouse_pos       = self.get_global_mouse_pos()
+func _follow_mouse(delta_t):
+	#var device_resolution = get_viewport().get_rect().size
+	#var resolution_ratio  = device_resolution.x / device_resolution.y
+	#game_resolution_ratio = Vector2(resolution_constant.RESOLUTION_X/device_resolution.x, resolution_constant.RESOLUTION_Y/device_resolution.y)
+	#var mouse_pos       = get_viewport().get_mouse_pos()
+	var mouse_pos       = get_viewport().get_mouse_pos()#get_viewport_transform().affine_inverse().xform(self.get_viewport().get_mouse_pos())
+	var player_position = get_viewport_transform().xform(self.get_pos())
+	
 	var delta_x         = player_position.x - mouse_pos.x
 	var delta_y         = player_position.y - mouse_pos.y
 	var angle           = atan2(delta_x, delta_y)
 	
+	"""print(device_resolution.x, " / ", device_resolution.y)
+	print(resolution_constant.RESOLUTION_X, " / ", resolution_constant.RESOLUTION_Y)
+	print(resolution_ratio)
+	print(basic_resolution_ratio)
+	if(resolution_ratio - basic_resolution_ratio < -0.006 ):
+		print("We are here")
+		#mouse_pos.y     = mouse_pos.y - (resolution_constant.RESOLUTION_Y - (resolution_constant.RESOLUTION_X - 1/basic_resolution_ratio * resolution_constant.RESOLUTION_X/device_resolution.x)/2)
+	else:
+		if(resolution_ratio - basic_resolution_ratio > 0.006):
+			print("We are there")
+			#mouse_pos.y     = mouse_pos.y - (resolution_constant.RESOLUTION_X - (resolution_constant.RESOLUTION_Y - basic_resolution_ratio * resolution_constant.RESOLUTION_Y/device_resolution.y)/2)
+	#mouse_pos           = mouse_pos * game_resolution_ratio"""
 	
-	get_node(".").set_rot(angle)
+	self.set_rot(angle)
 	
 	pass
 
 func _movement(delta):
-	var player_position = self.get_global_pos()
+	var player_position = self.get_pos()
 	var is_moving       = false
 	
 	var rotation        = Matrix32()
@@ -51,7 +75,7 @@ func _movement(delta):
 		get_node("anim_move").play("idle")
 	
 	get_node(".").move_to(player_position)
-	_follow_mouse(delta, player_position)
+	_follow_mouse(delta)
 
 
 func _fixed_process(delta):
