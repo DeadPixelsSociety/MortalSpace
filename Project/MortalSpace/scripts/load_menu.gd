@@ -32,6 +32,7 @@ func _on_cancel_pressed():
 func _fill_savegame():
 	var savegame_directory = Directory.new()
 	var savegame_name
+
 	#dir_exists is broken on windows, so don't use that part until it's fixed
 	#if(savegame_directory.dir_exists("user://")):
 	#	savegame_directory.open("user://")
@@ -50,10 +51,11 @@ func _fill_savegame():
 	print("List of file found : ")
 	while( "" != savegame_name):
 		
-		if(savegame_name.extension() == "chrctr" ):
+		if(savegame_name.extension() == "chrctr"):
 			get_node("savegame").add_item(savegame_name.basename())
 		
 		savegame_name = savegame_directory.get_next()
+
 
 func _ready():
 	_fill_savegame()

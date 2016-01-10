@@ -19,11 +19,15 @@ func _follow_mouse(delta_t):
 	#var resolution_ratio  = device_resolution.x / device_resolution.y
 	#game_resolution_ratio = Vector2(resolution_constant.RESOLUTION_X/device_resolution.x, resolution_constant.RESOLUTION_Y/device_resolution.y)
 	#var mouse_pos       = get_viewport().get_mouse_pos()
-	var mouse_pos       = get_viewport().get_mouse_pos()#get_viewport_transform().affine_inverse().xform(self.get_viewport().get_mouse_pos())
-	var player_position = get_viewport_transform().xform(self.get_pos())
+	var mouse_pos       = get_viewport().get_mouse_pos() #get_viewport_transform().affine_inverse().xform(self.get_viewport().get_mouse_pos())
+	var player_position = get_viewport_transform().xform(self.get_pos())	
 	
 	var delta_x         = player_position.x - mouse_pos.x
 	var delta_y         = player_position.y - mouse_pos.y
+	
+	print(mouse_pos)
+	print(player_position)
+	
 	var angle           = atan2(delta_x, delta_y)
 	
 	"""print(device_resolution.x, " / ", device_resolution.y)
