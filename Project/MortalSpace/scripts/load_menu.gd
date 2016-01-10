@@ -15,7 +15,7 @@ func _on_item_selected(num_item):
 
 func _on_validation_pressed():
 	
-	var savegame_name = get_node("savegame").get_item_text(_current_item)
+	var savegame_name = get_node("savegame_container/savegame").get_item_text(_current_item)
 	get_node("/root/savedata_manager").load_data_with_game_name(savegame_name)
 	#TODO verification si chargement possible
 	
@@ -41,7 +41,7 @@ func _fill_savegame():
 	#	return
 	savegame_directory.open("user://") #This have to be removed when dir_exists is fixed
 
-	get_node("savegame").set_max_columns(1)	
+	get_node("savegame_container/savegame").set_max_columns(1)	
 	print("trying to open user://")
 
 	
@@ -52,7 +52,7 @@ func _fill_savegame():
 	while( "" != savegame_name):
 		
 		if(savegame_name.extension() == "chrctr"):
-			get_node("savegame").add_item(savegame_name.basename())
+			get_node("savegame_container/savegame").add_item(savegame_name.basename())
 		
 		savegame_name = savegame_directory.get_next()
 
@@ -61,7 +61,7 @@ func _ready():
 	_fill_savegame()
 	get_node("valid_or_cancel_part").get_node("validation").connect("pressed", self, "_on_validation_pressed")
 	get_node("valid_or_cancel_part").get_node("cancel").connect("pressed", self, "_on_cancel_pressed")
-	get_node("savegame").connect("item_selected", self, "_on_item_selected")
+	get_node("savegame_container/savegame").connect("item_selected", self, "_on_item_selected")
 	set_process_input(true)
 	pass
 

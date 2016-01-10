@@ -6,10 +6,13 @@ extends "res://scripts/character.gd"
 var player_speed = 200
 #var basic_resolution_ratio = 0
 
+var _first_screen_size
+
 func _ready():
 	#basic_resolution_ratio = float(resolution_constant.RESOLUTION_X) / float(resolution_constant.RESOLUTION_Y)
 	#var device_resolution = get_viewport().get_rect().size
 	#game_resolution_ratio = Vector2(resolution_constant.RESOLUTION_X/device_resolution.x, resolution_constant.RESOLUTION_Y/device_resolution.y)
+	_first_screen_size = get_node("/root/game_variable").get_first_screen_size()
 	self.get_node("camera").make_current()
 	set_fixed_process(true)
 	
@@ -19,15 +22,17 @@ func _follow_mouse(delta_t):
 	#var resolution_ratio  = device_resolution.x / device_resolution.y
 	#game_resolution_ratio = Vector2(resolution_constant.RESOLUTION_X/device_resolution.x, resolution_constant.RESOLUTION_Y/device_resolution.y)
 	#var mouse_pos       = get_viewport().get_mouse_pos()
-	var mouse_pos       = get_viewport().get_mouse_pos() #get_viewport_transform().affine_inverse().xform(self.get_viewport().get_mouse_pos())
-	var player_position = get_viewport_transform().xform(self.get_pos())	
+	var mouse_pos       = get_viewport().get_mouse_pos()
+	var screen_size     = get_viewport().get_rect().size
+	#mouse_pos = get_viewport_transform().affine_inverse().xform(self.get_viewport().get_mouse_pos())
+	var player_position = (_first_screen_size.x / screen_size.x ) * get_viewport_transform().xform(self.get_pos())
 	
 	var delta_x         = player_position.x - mouse_pos.x
 	var delta_y         = player_position.y - mouse_pos.y
 	
-	print(mouse_pos)
-	print(player_position)
-	
+	#print(mouse_pos)
+	#print(player_position)
+
 	var angle           = atan2(delta_x, delta_y)
 	
 	"""print(device_resolution.x, " / ", device_resolution.y)

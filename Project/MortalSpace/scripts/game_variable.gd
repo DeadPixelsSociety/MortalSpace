@@ -3,6 +3,8 @@ extends Node
 
 var difficulty_constant = preload("res://scripts/difficulty_constant.gd")
 
+var _screen_size = null
+
 var _is_game_started = false
 
 var _difficulty = difficulty_constant.NONE
@@ -28,6 +30,13 @@ func start_game():
 
 func is_game_started():
 	return _is_game_started
+
+func get_first_screen_size():
+	return _screen_size
+
+func set_first_srceen_size(screen):
+	if(null == _screen_size):
+		_screen_size = screen
 
 func _ready():
 	get_node("/root/register_node").add_persistent_data(self)
