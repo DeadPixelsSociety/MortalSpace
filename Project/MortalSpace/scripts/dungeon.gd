@@ -6,6 +6,7 @@ extends Node2D
 # var b="textvar"
 
 var _node_which_active_trigger = ""
+var dungeon_generator = preload("res://scripts/dungeon_generator.gd").new()
 
 func set_node_which_active_trigger(new_node_path):
 	_node_which_active_trigger = new_node_path
@@ -24,9 +25,14 @@ func go_to_dungeon(dungeon_type, dungeon_scene_path = ""):
 	get_tree().set_pause(true)
 	self.hide()
 	if("" == dungeon_scene_path):
+		#print(dungeon_generator.get_random_point_in_circle(128))
+		for i in range(30):
+			print(dungeon_generator._cumulative_distributive_function())
+		
 		#TODO: Replace this by the dungeon creation algorithm
 		dungeon_scene_path = "res://scenes/generated_dungeon.scn"
 		dungeon = load(dungeon_scene_path)
+		
 	else:
 		dungeon = load(dungeon_scene_path)
 	#Ici le double load pourrait être factorisé, mais c'est seulement un test, on ne chargera plus directement le donjon dans le premier test
