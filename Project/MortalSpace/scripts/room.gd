@@ -21,7 +21,7 @@ func set_tile_floor(tile_number):
 	_tile_floor = tile_number
 
 func _create_floor_room():
-	print("tileset name = ", self.get_node("room_map").get_tileset().get_name())
+	#print("tileset name = ", self.get_node("room_map").get_tileset().get_name())
 	for x in range(_size.x):
 		for y in range(_size.y):
 			self.get_node("room_map").set_cell(x, y, _tile_floor)

@@ -6,7 +6,8 @@ extends Control
 # var b="textvar"
 
 func _ready():
-	self.get_node("/root/game_variable").set_first_srceen_size(self.get_viewport().get_rect().size)
+	self.get_node("/root/game_variable").set_first_screen_size(OS.get_video_mode_size(0))
+	print(get_node("/root/game_variable").get_first_screen_size())
 	# Initialization here
 	pass
 

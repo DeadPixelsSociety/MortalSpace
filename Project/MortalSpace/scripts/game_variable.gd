@@ -34,7 +34,7 @@ func is_game_started():
 func get_first_screen_size():
 	return _screen_size
 
-func set_first_srceen_size(screen):
+func set_first_screen_size(screen):
 	if(null == _screen_size):
 		_screen_size = screen
 

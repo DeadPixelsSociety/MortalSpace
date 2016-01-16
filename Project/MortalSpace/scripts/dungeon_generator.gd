@@ -117,7 +117,7 @@ func _ready():
 		average += room_size_x + room_size_y
 	
 	print("moyenne = ",average / 200)"""
-	_generate_dungeon(3,3, 128)
+	_generate_dungeon(1000,3, 6400)
 	pass
 
 
