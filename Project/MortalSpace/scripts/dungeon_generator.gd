@@ -22,6 +22,7 @@ var _generate_gaussian = true #True if we have to generate it, false otherwise
 var _variance = _standard_deviation * _standard_deviation
 
 var _room_list = Array()
+var _room_pos_list = Array()
 
 # member variables here, example:
 # var a=2
@@ -83,29 +84,74 @@ func _get_random_point_in_circle(radius):
 	
 	return Vector2( _roundm(radius * r * cos(t), TILE_SIZE), _roundm(radius * r * sin(t), TILE_SIZE) )
 
-func _generate_room(radius, room_size_x_derivation = 10, room_size_y_derivation = 10): #generate a room in a given radius
-	var room_size = Vector2(_generate_room_size(room_size_x_derivation), _generate_room_size(room_size_y_derivation))
+
+
+func _generate_room_size_vec(radius, room_size_x_derivation = 10, room_size_y_derivation = 10): 
+#generate a room in a given radius
+	return Vector2(_generate_room_size(room_size_x_derivation), _generate_room_size(room_size_y_derivation))
+
+func generate_room(room_pos, room_size):
+
 	var room = room_scene.instance()
-	
 	self.add_child(room)
 
 	room.set_vector_size(room_size)
 	room.set_global_pos(_get_random_point_in_circle(radius))
 	room.set_tileset("res://tileset/tile_set_vaisseau_test.res")
-	room.set_tile_floor(0)
+	room.set_floor_tile(0)
 
 	_room_list.push_back(room)
 
-func _generate_dungeon(room_number_created, room_number_kept, radius = 64000):
-	for i in range(room_number_created):
-		_generate_room(radius)
+func _generate_dungeon_skeleton(room_number_created, room_number_kept, radius = 64000):
+	for i in range (room_number_created):
+		_room_pos_list.push_back(_get_random_point_in_circle(radius))
+		
+	_room_pos_list.sort()
+	print(_room_pos_list)
+	#TODO sort pos_list
+	#for i in range(room_number_created):
+	#	_generate_room(radius)
+	#
+	#var room_list_size = _room_list.size()
+	#for i in range(room_list_size):
+	#	_room_list[i].generate_room()
+
+
+#################################SPLITING#####################################
+
+func _global_position_to_tile_position(pos):
+	return pos/TILE_SIZE
+
+
+func _superposition(room1, room2):
+	var room1_origin = _global_position_to_tile_position(room1.get_global_pos())
+	var room2_origin = _global_position_to_tile_position(room2.get_global_pos())
+	
+	var room1_end = room1_origin + room1.get_vector_size()
+	var room2_end = room2_origin + room2.get_vector_size()
+	
+	return room1_origin.x < room2_end.x && room1_end.x > room2_origin.x && room1_origin.y < room2_end.y && room1_end.y > room2_origin.y
+
+func _make_distance_array():
+	var distance_array = Array()
 	
 	var room_list_size = _room_list.size()
+	var distance = 0.0
+	var vec = Vector2(0.0, 0.0)
 	for i in range(room_list_size):
-		print("room generation")
-		_room_list[i].generate_room()
+		vec = _room_list[i].get_global_pos()
+		distance = abs(vec.x) + abs(vec.y)
+		distance_array.push_back(distance)
+		
+	return distance_array
+
+func _sort_room_by_distance_from_origin(median):
+	var distance_array = _make_distance_array()
+	return _sort_room_by_distance_from_origin_rec(distance_array, _room_list, median)
 
 
+
+###############################################################################
 func _ready():
 	"""var room_size_x = 0.0
 	var room_size_y = 0.0
@@ -117,7 +163,9 @@ func _ready():
 		average += room_size_x + room_size_y
 	
 	print("moyenne = ",average / 200)"""
-	_generate_dungeon(1000,3, 6400)
+	#_generate_dungeon(1000,3, 6400)
+	
+	_generate_dungeon_skeleton(1000, 100, 6400)
 	pass
 
 
