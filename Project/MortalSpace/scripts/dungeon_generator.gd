@@ -90,24 +90,26 @@ func _generate_room_size_vec(radius, room_size_x_derivation = 10, room_size_y_de
 #generate a room in a given radius
 	return Vector2(_generate_room_size(room_size_x_derivation), _generate_room_size(room_size_y_derivation))
 
-func generate_room(room_pos, room_size):
+func _generate_room(room_pos, room_size):
 
 	var room = room_scene.instance()
 	self.add_child(room)
 
 	room.set_vector_size(room_size)
-	room.set_global_pos(_get_random_point_in_circle(radius))
+	room.set_global_pos(room_pos)
 	room.set_tileset("res://tileset/tile_set_vaisseau_test.res")
 	room.set_floor_tile(0)
 
-	_room_list.push_back(room)
+	room.generate_room()
 
 func _generate_dungeon_skeleton(room_number_created, room_number_kept, radius = 64000):
 	for i in range (room_number_created):
 		_room_pos_list.push_back(_get_random_point_in_circle(radius))
+		_room_list.push_back(_generate_room_size_vec(radius))
 		
-	_room_pos_list.sort()
-	print(_room_pos_list)
+	#_room_pos_list.sort()
+	for i in range (room_number_created):
+		print(_room_pos_list[i]/64.0)
 	#TODO sort pos_list
 	#for i in range(room_number_created):
 	#	_generate_room(radius)
@@ -149,7 +151,10 @@ func _sort_room_by_distance_from_origin(median):
 	var distance_array = _make_distance_array()
 	return _sort_room_by_distance_from_origin_rec(distance_array, _room_list, median)
 
-
+func _draw_dungeon():
+	var room_list_size = _room_list.size()
+	for i in range(room_list_size):
+		_generate_room(_room_pos_list[i], _room_list[i])
 
 ###############################################################################
 func _ready():
@@ -165,7 +170,8 @@ func _ready():
 	print("moyenne = ",average / 200)"""
 	#_generate_dungeon(1000,3, 6400)
 	
-	_generate_dungeon_skeleton(1000, 100, 6400)
+	_generate_dungeon_skeleton(10, 100, 6400)
+	_draw_dungeon()
 	pass
 
 

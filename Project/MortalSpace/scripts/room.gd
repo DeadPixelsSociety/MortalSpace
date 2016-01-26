@@ -22,14 +22,14 @@ func set_tileset(tileset_name):
 func set_floor_tile(tile_number):
 	_floor_tile = tile_number
 
-func _create_floor_room():
-	#print("tileset name = ", self.get_node("room_map").get_tileset().get_name())
+func _create_room_floor():
+	print("tileset name = ", self.get_node("room_map").get_tileset().get_name())
 	for x in range(_size.x):
 		for y in range(_size.y):
 			self.get_node("room_map").set_cell(x, y, _floor_tile)
 
 func generate_room():
-	_create_floor_room()
+	_create_room_floor()
 
 func get_vector_size():
 	return _size
