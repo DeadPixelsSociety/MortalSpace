@@ -6,10 +6,16 @@ var room_scene = preload("res://scenes/room.scn")
 const TILE_SIZE = 64
 const EPSILON = 0.00001 #Arbitrary number
 
+const POS_INDEX = 0
+const SIZE_INDEX = 1
+const ROOM_INFO_NUMBER = 2
+
 const MINIMAL_ROOM_SIZE = 5 #in tile, 3 floors, 2 walls
 
 var   _2_PI      = 2*PI
 var   _SQRT_2_PI = sqrt(2 * PI)
+
+var _ORIGIN = Vector2(0,0)
 
 var _expectation = 0.3
 var _standard_deviation = 0.01
@@ -22,7 +28,6 @@ var _generate_gaussian = true #True if we have to generate it, false otherwise
 var _variance = _standard_deviation * _standard_deviation
 
 var _room_list = Array()
-var _room_pos_list = Array()
 
 # member variables here, example:
 # var a=2
@@ -103,13 +108,16 @@ func _generate_room(room_pos, room_size):
 	room.generate_room()
 
 func _generate_dungeon_skeleton(room_number_created, room_number_kept, radius = 64000):
+	var tmp_room_info_array = null
+	
 	for i in range (room_number_created):
-		_room_pos_list.push_back(_get_random_point_in_circle(radius))
-		_room_list.push_back(_generate_room_size_vec(radius))
+		tmp_room_info_array = Array()
+		tmp_room_info_array.resize(ROOM_INFO_NUMBER)
+		tmp_room_info_array[POS_INDEX] = _get_random_point_in_circle(radius)
+		tmp_room_info_array[SIZE_INDEX] = _generate_room_size_vec(radius)
+		_room_list.push_back(tmp_room_info_array)
 		
 	#_room_pos_list.sort()
-	for i in range (room_number_created):
-		print(_room_pos_list[i]/64.0)
 	#TODO sort pos_list
 	#for i in range(room_number_created):
 	#	_generate_room(radius)
@@ -134,27 +142,25 @@ func _superposition(room1, room2):
 	
 	return room1_origin.x < room2_end.x && room1_end.x > room2_origin.x && room1_origin.y < room2_end.y && room1_end.y > room2_origin.y
 
-func _make_distance_array():
-	var distance_array = Array()
-	
-	var room_list_size = _room_list.size()
-	var distance = 0.0
-	var vec = Vector2(0.0, 0.0)
-	for i in range(room_list_size):
-		vec = _room_list[i].get_global_pos()
-		distance = abs(vec.x) + abs(vec.y)
-		distance_array.push_back(distance)
-		
-	return distance_array
+func _get_distance_from_origin(room_array):
+	return room_array[POS_INDEX].distance_to(_ORIGIN)
 
 func _sort_room_by_distance_from_origin(median):
-	var distance_array = _make_distance_array()
-	return _sort_room_by_distance_from_origin_rec(distance_array, _room_list, median)
+	var _room_array_tmp = Array()
+	var _room_array_pos_tmp = Array()
+	
+	_room_array_tmp.resize(_room_list.size())
+	_room_array_pos_tmp.resize(_room_list.size())
+	
+	print("taille tableau généré", _room_array_pos_tmp.size())
+	
 
 func _draw_dungeon():
 	var room_list_size = _room_list.size()
+	#print(_room_list)
 	for i in range(room_list_size):
-		_generate_room(_room_pos_list[i], _room_list[i])
+		#print(_room_list[i][POS_INDEX])
+		_generate_room(_room_list[i][POS_INDEX], _room_list[i][SIZE_INDEX])
 
 ###############################################################################
 func _ready():
@@ -170,7 +176,8 @@ func _ready():
 	print("moyenne = ",average / 200)"""
 	#_generate_dungeon(1000,3, 6400)
 	
-	_generate_dungeon_skeleton(10, 100, 6400)
+	_generate_dungeon_skeleton(100, 100, 6400)
+	_sort_room_by_distance_from_origin(3200)
 	_draw_dungeon()
 	pass
 
