@@ -145,15 +145,19 @@ func _superposition(room1, room2):
 func _get_distance_from_origin(room_array):
 	return room_array[POS_INDEX].distance_to(_ORIGIN)
 
-func _sort_room_by_distance_from_origin(median):
-	var _room_array_tmp = Array()
-	var _room_array_pos_tmp = Array()
+func _sort_room_by_distance_from_origin(median): #Quick sort iteratif
+	var stack = Array()
+	var array_more = null
+	var array_less = null
+	var array_to_sort = _room_list
 	
-	_room_array_tmp.resize(_room_list.size())
-	_room_array_pos_tmp.resize(_room_list.size())
+	var array_result = Array()
 	
-	print("taille tableau généré", _room_array_pos_tmp.size())
-	
+	while(array_result.size() < _room_list.size()):
+		
+		for i in range(array_to_sort.size()):
+			pass 
+
 
 func _draw_dungeon():
 	var room_list_size = _room_list.size()
