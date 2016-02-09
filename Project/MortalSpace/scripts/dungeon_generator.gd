@@ -145,19 +145,78 @@ func _superposition(room1, room2):
 func _get_distance_from_origin(room_array):
 	return room_array[POS_INDEX].distance_to(_ORIGIN)
 
-func _sort_room_by_distance_from_origin(median): #Quick sort iteratif
+func _sort_room_by_distance_from_origin(array_to_sort): #Quick sort iteratif
 	var stack = Array()
 	var array_more = null
+	var array_median = null
 	var array_less = null
-	var array_to_sort = _room_list
+	var tmp_array_to_sort = array_to_sort
 	
 	var array_result = Array()
 	
-	while(array_result.size() < _room_list.size()):
+	var array_result_size = array_to_sort.size()
+	
+	array_result.resize(array_result_size)
+	
+	var filling_index = 0
+	
+	var size_tmp_array_to_sort = tmp_array_to_sort.size()
+	
+	var median = _get_distance_from_origin(tmp_array_to_sort[0])
+	
+	var last_place_in_stack = stack.size() - 1
+	
+	while(filling_index < array_result_size):
 		
-		for i in range(array_to_sort.size()):
-			pass 
+		size_tmp_array_to_sort = tmp_array_to_sort.size()
+		#print("size of array to sort : ")
+		#print(size_tmp_array_to_sort)
+		
+		if(size_tmp_array_to_sort == 1):
+			array_result[filling_index] = tmp_array_to_sort[0]
+			filling_index += 1
+		else:
+			array_more = Array()
+			array_median = Array()
+			array_less = Array()
+			
+			#print("array to sort : ")
+			#print(tmp_array_to_sort)
+			
+			median = _get_distance_from_origin(tmp_array_to_sort[0])
+			
+			#print("Here we go")
+			
+			array_median.push_back(tmp_array_to_sort[0])
+			
+			for i in range(1, size_tmp_array_to_sort):
+				if(_get_distance_from_origin(tmp_array_to_sort[i]) < median):
+					array_less.push_back(tmp_array_to_sort[i])
+				else:
+					array_more.push_back(tmp_array_to_sort[i])
+				
+			if(array_more.empty() == false):
+				stack.push_back(array_more)
+			
+			stack.push_back(array_median)
+			
+			if(array_less.empty() == false):
+				stack.push_back(array_less)
+		
+		last_place_in_stack = stack.size() - 1
+		if(0 <= last_place_in_stack):
+			tmp_array_to_sort = stack[last_place_in_stack]
+			stack.remove(last_place_in_stack)
+		
+		#print("Here is our stack : ")
+		#print(stack)
+		#Maybe we need to add a protection in case stack is empty, normaly it is impossible.
+	
+	return array_result
 
+func _print_distance_in_array(sorted_array):
+	for i in range (sorted_array.size()):
+		print(_get_distance_from_origin(sorted_array[i]))
 
 func _draw_dungeon():
 	var room_list_size = _room_list.size()
@@ -181,8 +240,9 @@ func _ready():
 	#_generate_dungeon(1000,3, 6400)
 	
 	_generate_dungeon_skeleton(100, 100, 6400)
-	_sort_room_by_distance_from_origin(3200)
-	_draw_dungeon()
+	var sorted_array = _sort_room_by_distance_from_origin(_room_list)
+	_print_distance_in_array(sorted_array)
+	#_draw_dungeon()
 	pass
 
 
