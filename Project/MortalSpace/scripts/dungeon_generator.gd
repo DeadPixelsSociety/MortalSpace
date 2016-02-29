@@ -6,6 +6,10 @@ var room_scene = preload("res://scenes/room.scn")
 const TILE_SIZE = 64
 const EPSILON = 0.00001 #Arbitrary number
 
+const METHOD_X = 0
+const METHOD_Y = 1
+const METHOD_DISTANCE = 2
+
 const POS_INDEX = 0
 const SIZE_INDEX = 1
 const ROOM_INFO_NUMBER = 2
@@ -145,7 +149,19 @@ func _superposition(room1, room2):
 func _get_distance_from_origin(room_array):
 	return room_array[POS_INDEX].distance_to(_ORIGIN)
 
-func _sort_room_by_distance_from_origin(array_to_sort): #Quick sort iteratif
+func _test_to_sort(to_test, median, method):
+	if(METHOD_X == method):
+		return to_test[POS_INDEX].x < median
+	else:
+		if (METHOD_Y == method):
+			return to_test[POS_INDEX].y < median
+		else:
+			if (METHOD_DISTANCE == method):
+				return _get_distance_from_origin(to_test) < median 
+
+	return false
+
+func _sort_room_by_distance_from_origin(array_to_sort, method): #Quick sort iteratif
 	var stack = Array()
 	var array_more = null
 	var array_median = null
@@ -182,15 +198,19 @@ func _sort_room_by_distance_from_origin(array_to_sort): #Quick sort iteratif
 			
 			#print("array to sort : ")
 			#print(tmp_array_to_sort)
-			
-			median = _get_distance_from_origin(tmp_array_to_sort[0])
+			if(METHOD_X == method):
+				median = tmp_array_to_sort[0][POS_INDEX].x
+			if(METHOD_Y == method):
+				median = tmp_array_to_sort[0][POS_INDEX].y
+			if(METHOD_DISTANCE == method):
+				median = _get_distance_from_origin(tmp_array_to_sort[0])
 			
 			#print("Here we go")
 			
 			array_median.push_back(tmp_array_to_sort[0])
 			
 			for i in range(1, size_tmp_array_to_sort):
-				if(_get_distance_from_origin(tmp_array_to_sort[i]) < median):
+				if(_test_to_sort(tmp_array_to_sort[i], median, method)):
 					array_less.push_back(tmp_array_to_sort[i])
 				else:
 					array_more.push_back(tmp_array_to_sort[i])
@@ -225,6 +245,50 @@ func _draw_dungeon():
 		#print(_room_list[i][POS_INDEX])
 		_generate_room(_room_list[i][POS_INDEX], _room_list[i][SIZE_INDEX])
 
+func _is_positive(to_test, method):
+	if(METHOD_X == method):
+		return to_test[POS_INDEX].x > 0
+	else:
+		if(METHOD_Y == method):
+			return to_test[POS_INDEX].y > 0
+
+	return false
+
+func _create_minus_and_positive_array(array_from, array_minus, array_positive, method):
+	var size_array = array_from.size()
+
+	_sort_room_by_distance_from_origin(array_from, method)
+	print("PASSAGE")
+	var change_index = 0
+	
+	for i in range(size_array):
+		if(_is_positive(array_from[i], method)):
+			change_index = i
+			break
+		else:
+			array_minus.push_back(array_from[i])
+
+	for i in range(size_array - change_index):
+		array_positive.push_back(array_from[size_array - 1 - i])
+	
+	print(array_minus)
+
+
+func _expand_dungeon():
+	var array_minus_x    = Array()
+	var array_positive_x = Array()
+	var array_minus_y    = Array()
+	var array_positive_y = Array()
+
+	_create_minus_and_positive_array(_room_list, array_minus_x, array_positive_x, METHOD_X)
+	_create_minus_and_positive_array(_room_list, array_minus_y, array_positive_y, METHOD_Y)
+
+	print("Affichage des tableaux")
+	#print(_room_list)
+	print(array_minus_x)
+	
+	
+
 ###############################################################################
 func _ready():
 	"""var room_size_x = 0.0
@@ -240,8 +304,9 @@ func _ready():
 	#_generate_dungeon(1000,3, 6400)
 	
 	_generate_dungeon_skeleton(100, 100, 6400)
-	var sorted_array = _sort_room_by_distance_from_origin(_room_list)
-	_print_distance_in_array(sorted_array)
+	_expand_dungeon()
+	#_print_distance_in_array(sorted_array)
+	
 	#_draw_dungeon()
 	pass
 
