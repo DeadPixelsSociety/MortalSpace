@@ -2,8 +2,8 @@
 extends Node
 
 var room_scene = preload("res://scenes/room.scn")
+var room_script = preload("res://scripts/room.gd")
 
-const TILE_SIZE = 64
 const EPSILON = 0.00001 #Arbitrary number
 
 const POS_INDEX = 0
@@ -28,6 +28,8 @@ var _generate_gaussian = true #True if we have to generate it, false otherwise
 var _variance = _standard_deviation * _standard_deviation
 
 var _room_list = Array()
+
+var _room_scene_list = null
 
 # member variables here, example:
 # var a=2
@@ -87,7 +89,7 @@ func _get_random_point_in_circle(radius):
 	else:
 		r = u
 	
-	return Vector2( _roundm(radius * r * cos(t), TILE_SIZE), _roundm(radius * r * sin(t), TILE_SIZE) )
+	return Vector2( _roundm(radius * r * cos(t), room_script.TILE_SIZE), _roundm(radius * r * sin(t), room_script.TILE_SIZE) )
 
 
 
@@ -130,7 +132,7 @@ func _generate_dungeon_skeleton(room_number_created, room_number_kept, radius = 
 #################################SPLITING#####################################
 
 func _global_position_to_tile_position(pos):
-	return pos/TILE_SIZE
+	return pos/room_script.TILE_SIZE
 
 
 func _superposition(room1, room2):
@@ -218,12 +220,42 @@ func _print_distance_in_array(sorted_array):
 	for i in range (sorted_array.size()):
 		print(_get_distance_from_origin(sorted_array[i]))
 
-func _draw_dungeon():
+func _separate_room():
+	var room_list_size = _room_list.size()
+	for i in range(room_list_size):
+		_room_scene_list[i].add_collision_shape()
+	
+	_room_scene_list[0].move_to(Vector2(0, room_script.TILE_SIZE))
+
+func _clean_kinematic():
+	var colliding_array = Array()
+	var is_colliding = true
+	var room_scene_list_size = _room_scene_list.size()
+	var i = 0
+	while(true == is_colliding):
+		is_colliding = false
+		i = 0
+		"""while(i < room_scene_list_size): 
+			colliding_array = _room_scene_list[i]. get_colliding_bodies()
+			print(colliding_array)
+			i = i + 1"""
+	
+	for j in range(room_scene_list_size):
+		_room_scene_list[j].remove_collision_shape()
+
+func _draw_room_with_floor():
 	var room_list_size = _room_list.size()
 	#print(_room_list)
 	for i in range(room_list_size):
 		#print(_room_list[i][POS_INDEX])
 		_generate_room(_room_list[i][POS_INDEX], _room_list[i][SIZE_INDEX])
+	
+	_room_scene_list = get_children()
+
+func _add_wall_to_rooms():
+	var room_scene_list_size = _room_scene_list.size()
+	for i in range(room_scene_list_size):
+		_room_scene_list[i].add_wall()
 
 ###############################################################################
 func _ready():
@@ -239,10 +271,14 @@ func _ready():
 	print("moyenne = ",average / 200)"""
 	#_generate_dungeon(1000,3, 6400)
 	
-	_generate_dungeon_skeleton(100, 100, 6400)
-	var sorted_array = _sort_room_by_distance_from_origin(_room_list)
-	_print_distance_in_array(sorted_array)
-	#_draw_dungeon()
+	#get_node("/root/game/player").queue_free()
+	_generate_dungeon_skeleton(10, 100, 64)
+	#var sorted_array = _sort_room_by_distance_from_origin(_room_list)
+	#_print_distance_in_array(sorted_array)
+	_draw_room_with_floor()
+	_separate_room()
+	_clean_kinematic()
+	_add_wall_to_rooms()
 	pass
 
 
