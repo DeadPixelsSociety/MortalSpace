@@ -79,7 +79,7 @@ func _roundm(n, m):
 
 # algorithm find at : 
 #http://www.gamasutra.com/blogs/AAdonaac/20150903/252889/Procedural_Dungeon_Generation_Algorithm.php
-func _get_random_point_in_circle(radius):
+func _get_random_point_in_ring(ring_radius, hole_radius):
 	var t = 2 * PI * randf()
 	var u = randf() + randf()
 	var r = null
@@ -89,12 +89,12 @@ func _get_random_point_in_circle(radius):
 	else:
 		r = u
 	
-	return Vector2( _roundm(radius * r * cos(t), room_script.TILE_SIZE), _roundm(radius * r * sin(t), room_script.TILE_SIZE) )
+	return Vector2( _roundm((ring_radius * r ) * cos(t), room_script.TILE_SIZE), _roundm((ring_radius * r + hole_radius)* sin(t), room_script.TILE_SIZE) )
 
 
 
-func _generate_room_size_vec(radius, room_size_x_derivation = 10, room_size_y_derivation = 10): 
-#generate a room in a given radius
+func _generate_room_size_vec(room_size_x_derivation = 10, room_size_y_derivation = 10): 
+
 	return Vector2(_generate_room_size(room_size_x_derivation), _generate_room_size(room_size_y_derivation))
 
 func _generate_room(room_pos, room_size):
@@ -115,8 +115,8 @@ func _generate_dungeon_skeleton(room_number_created, room_number_kept, radius = 
 	for i in range (room_number_created):
 		tmp_room_info_array = Array()
 		tmp_room_info_array.resize(ROOM_INFO_NUMBER)
-		tmp_room_info_array[POS_INDEX] = _get_random_point_in_circle(radius)
-		tmp_room_info_array[SIZE_INDEX] = _generate_room_size_vec(radius)
+		tmp_room_info_array[POS_INDEX] = _get_random_point_in_ring(radius, room_number_created*40*room_script.TILE_SIZE)
+		tmp_room_info_array[SIZE_INDEX] = _generate_room_size_vec()
 		_room_list.push_back(tmp_room_info_array)
 		
 	#_room_pos_list.sort()
@@ -220,12 +220,48 @@ func _print_distance_in_array(sorted_array):
 	for i in range (sorted_array.size()):
 		print(_get_distance_from_origin(sorted_array[i]))
 
-func _separate_room():
+func _rooms_accretion():
 	var room_list_size = _room_list.size()
+	var target_position = Vector2(0,0)
+
 	for i in range(room_list_size):
-		_room_scene_list[i].add_collision_shape()
+		_move_room_to_dungeon(_room_scene_list[i], target_position)
+
+func _move_room_to_dungeon(room, target_position):
+	room.add_collision_shape()
+	var move_vector = Vector2(0,0)
+	var room_pos = room.get_pos()
+	var i = 100
+
+	print("room position before moving = ", room_pos)
+
+	while(room_pos.x != target_position.x && room_pos.y != target_position.y && false == room.is_colliding() && i >0):
+		
+		#Normaly y is never equal to 0
+		
+		
+		if(abs(room.get_pos().x) < abs(room.get_pos().y)):
+			move_vector.x = 0
+			move_vector.y = room_script.TILE_SIZE
+		else:
+			move_vector.x = room_script.TILE_SIZE
+			move_vector.y = 0
+
+		if(room_pos.x < 0):
+			move_vector.x *= -1
+		
+		if(room_pos.y < 0):
+			move_vector.y *= -1
+
+		i += -1
+
+		room.move_to(room_pos - move_vector)
+		room_pos = room.get_pos()
+		
+	print("room position = ", room_pos)
 	
-	_room_scene_list[0].move_to(Vector2(0, room_script.TILE_SIZE))
+	
+
 
 func _clean_kinematic():
 	var colliding_array = Array()
@@ -257,6 +293,9 @@ func _add_wall_to_rooms():
 	for i in range(room_scene_list_size):
 		_room_scene_list[i].add_wall()
 
+func get_starting_point():
+	return _room_scene_list[0].get_pos()
+
 ###############################################################################
 func _ready():
 	"""var room_size_x = 0.0
@@ -272,11 +311,11 @@ func _ready():
 	#_generate_dungeon(1000,3, 6400)
 	
 	#get_node("/root/game/player").queue_free()
-	_generate_dungeon_skeleton(10, 100, 64)
+	_generate_dungeon_skeleton(2, 100, 6400)
 	#var sorted_array = _sort_room_by_distance_from_origin(_room_list)
 	#_print_distance_in_array(sorted_array)
 	_draw_room_with_floor()
-	_separate_room()
+	_rooms_accretion()
 	_clean_kinematic()
 	_add_wall_to_rooms()
 	pass

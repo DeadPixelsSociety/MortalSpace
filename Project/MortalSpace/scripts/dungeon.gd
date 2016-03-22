@@ -7,6 +7,7 @@ extends Node2D
 
 var _node_which_active_trigger = ""
 var dungeon_generator = preload("res://scenes/dungeon_generator.scn")
+var player_scene = preload("res://scenes/player.scn")
 
 func set_node_which_active_trigger(new_node_path):
 	_node_which_active_trigger = new_node_path
@@ -21,9 +22,10 @@ func activate_trigger():
 func go_to_dungeon(dungeon_type, dungeon_scene_path = ""):
 	var dungeon
 	var old_child = (self.get_children())[0]
-
-	get_tree().set_pause(true)
-	self.hide()
+	self.get_node("../player").set_pos(Vector2(-100000,-100000))
+	
+	#get_tree().set_pause(true)
+	#self.hide()
 	if("" == dungeon_scene_path):
 		#print(dungeon_generator.get_random_point_in_circle(128))
 		dungeon = dungeon_generator
@@ -37,12 +39,23 @@ func go_to_dungeon(dungeon_type, dungeon_scene_path = ""):
 	#Ici le double load pourrait être factorisé, mais c'est seulement un test, on ne chargera plus directement le donjon dans le premier test
 	#puisqu'on devra le générer de toute pièce
 
-	add_child(dungeon.instance())
-	old_child.queue_free() 
+	var dungeon_instance = dungeon.instance()
+	add_child(dungeon_instance)
+	self.get_node("../player").set_pos(dungeon_instance.get_starting_point())
+	old_child.queue_free()
+	
+	
 	#TODO: Adding a function to position the player
 	#TODO: Adding a function to add enemies, using dungeon_type
-	self.show()
-	get_tree().set_pause(false)
+	#self.show()
+	#get_tree().set_pause(false)
+
+#TODO: place player on starting point un dungeon
+#TODO: load is current ammo and equipment
+func _put_player_on_starting_point():
+	var player = player_scene.instance()
+	#player.set_pos(self.get_children()[0].get_starting_point())
+	self.get_node("..").add_child(player)
 
 func return_to_vessel():
 	go_to_dungeon(0, "res://scenes/vessel.scn")

@@ -58,10 +58,9 @@ func get_vector_size():
 	return _size
 
 func add_collision_shape():
-	var shape     = RectangleShape2D.new()
-	
-	shape.set_extents(_size * TILE_SIZE)
-	get_node("./shape").set_shape(shape)
+	get_node("./shape").get_shape().set_extents(_size * TILE_SIZE)
+	print("taille de la salle : ", _size)
+	print("taille du la forme de collision : ", get_node("./shape").get_shape().get_extents()/64)
 
 func remove_collision_shape():
 	clear_shapes()

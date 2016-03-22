@@ -3,7 +3,7 @@ extends "res://scripts/character.gd"
 
 #var resolution_constant = preload("res://scripts/resolution_constant.gd")
 
-var player_speed = 200
+var player_speed = 2000/2
 #var basic_resolution_ratio = 0
 
 var _first_screen_size
