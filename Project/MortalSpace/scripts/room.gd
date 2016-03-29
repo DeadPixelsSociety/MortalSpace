@@ -9,8 +9,8 @@ const TILE_SIZE = 64
 
 var _size = Vector2(0.0, 0.0)
 var _floor_tile = 0
-var _wall_corner_tile = 3
-var _wall_tile = 2
+var _wall_corner_tile = 1 #3 In reality it is 3 but I use one in this case to test the dungeon creation
+var _wall_tile = 1 #2 In reality it is 2 but I use one in this case to test the dungeon creation
 
 
 func set_size(x, y):
@@ -54,6 +54,7 @@ func add_wall():
 func generate_room():
 	_create_room_floor()
 
+#tile unit
 func get_vector_size():
 	return _size
 

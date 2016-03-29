@@ -3,6 +3,9 @@ extends Node
 
 var room_scene = preload("res://scenes/room.scn")
 var room_script = preload("res://scripts/room.gd")
+var dungeon_collision_matrice = preload("res://scripts/dungeon_collision_matrice.gd")
+
+var _collision_matrice = null
 
 const EPSILON = 0.00001 #Arbitrary number
 
@@ -134,16 +137,6 @@ func _generate_dungeon_skeleton(room_number_created, room_number_kept, radius = 
 func _global_position_to_tile_position(pos):
 	return pos/room_script.TILE_SIZE
 
-
-func _superposition(room1, room2):
-	var room1_origin = _global_position_to_tile_position(room1.get_global_pos())
-	var room2_origin = _global_position_to_tile_position(room2.get_global_pos())
-	
-	var room1_end = room1_origin + room1.get_vector_size()
-	var room2_end = room2_origin + room2.get_vector_size()
-	
-	return room1_origin.x < room2_end.x && room1_end.x > room2_origin.x && room1_origin.y < room2_end.y && room1_end.y > room2_origin.y
-
 func _get_distance_from_origin(room_array):
 	return room_array[POS_INDEX].distance_to(_ORIGIN)
 
@@ -222,43 +215,56 @@ func _print_distance_in_array(sorted_array):
 
 func _rooms_accretion():
 	var room_list_size = _room_list.size()
-	var target_position = Vector2(0,0)
+	var target_position = null
+
+	_collision_matrice = dungeon_collision_matrice.new()
 
 	for i in range(room_list_size):
+		target_position = Vector2(0,0)
 		_move_room_to_dungeon(_room_scene_list[i], target_position)
 
 func _move_room_to_dungeon(room, target_position):
-	room.add_collision_shape()
-	var move_vector = Vector2(0,0)
-	var room_pos = room.get_pos()
-	var i = 100
+	var x_direction = randf()
+	var y_direction = randf()
+	var gap = -1
+	var x_or_y = true #true if we move in x coordinate, false otherwise
+	var direction = 1
 
-	print("room position before moving = ", room_pos)
+	if(x_direction > 0.5):
+		x_direction = -1
+	else:
+		x_direction = 1
+	
+	if(y_direction > 0.5):
+		y_direction = -1
+	else:
+		y_direction = 1
 
-	while(room_pos.x != target_position.x && room_pos.y != target_position.y && false == room.is_colliding() && i >0):
+	print("room position before collision_matrice = ", room.get_pos())
+
+	while(0 != gap):
 		
-		#Normaly y is never equal to 0
+		x_or_y = randf() > 0.5
+		if(true == x_or_y):
+			direction = x_direction
+		else: 
+			direction = y_direction
+
+		gap = _collision_matrice.get_new_gap(room, target_position, direction, x_or_y)
 		
+		print("gap = ", gap)
 		
-		if(abs(room.get_pos().x) < abs(room.get_pos().y)):
-			move_vector.x = 0
-			move_vector.y = room_script.TILE_SIZE
+		if(true == x_or_y):
+			target_position.x += gap
 		else:
-			move_vector.x = room_script.TILE_SIZE
-			move_vector.y = 0
+			target_position.y += gap
 
-		if(room_pos.x < 0):
-			move_vector.x *= -1
+	print("target_position = ", target_position)
+
+	room.set_pos(target_position)
+	_collision_matrice.add_room_in_matrice(room)
 		
-		if(room_pos.y < 0):
-			move_vector.y *= -1
-
-		i += -1
-
-		room.move_to(room_pos - move_vector)
-		room_pos = room.get_pos()
-		
-	print("room position = ", room_pos)
+	print("room position = ", room.get_pos())
 	
 	
 
@@ -311,13 +317,11 @@ func _ready():
 	#_generate_dungeon(1000,3, 6400)
 	
 	#get_node("/root/game/player").queue_free()
-	_generate_dungeon_skeleton(2, 100, 6400)
+	_generate_dungeon_skeleton(20, 100, 6400)
 	#var sorted_array = _sort_room_by_distance_from_origin(_room_list)
 	#_print_distance_in_array(sorted_array)
 	_draw_room_with_floor()
 	_rooms_accretion()
-	_clean_kinematic()
+	#_clean_kinematic()
 	_add_wall_to_rooms()
 	pass
-
-

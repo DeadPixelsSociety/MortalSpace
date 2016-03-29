@@ -54,7 +54,7 @@ func go_to_dungeon(dungeon_type, dungeon_scene_path = ""):
 #TODO: load is current ammo and equipment
 func _put_player_on_starting_point():
 	var player = player_scene.instance()
-	#player.set_pos(self.get_children()[0].get_starting_point())
+	player.set_pos(self.get_children()[0].get_starting_point())
 	self.get_node("..").add_child(player)
 
 func return_to_vessel():
