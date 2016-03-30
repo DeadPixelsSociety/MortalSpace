@@ -11,7 +11,6 @@ func get_room_with_index(i):
 	return _room_list[i]
 
 func push_back(room):
-	print("list push_back")
 	_room_list.push_back(room)
 
 func size():

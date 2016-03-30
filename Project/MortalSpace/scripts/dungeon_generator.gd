@@ -240,7 +240,7 @@ func _move_room_to_dungeon(room, target_position):
 	else:
 		y_direction = 1
 
-	print("room position before collision_matrice = ", room.get_pos())
+	#print("room position before collision_matrice = ", room.get_pos())
 
 	while(0 != gap):
 		
@@ -252,19 +252,19 @@ func _move_room_to_dungeon(room, target_position):
 
 		gap = _collision_matrice.get_new_gap(room, target_position, direction, x_or_y)
 		
-		print("gap = ", gap)
+		#print("gap = ", gap)
 		
 		if(true == x_or_y):
 			target_position.x += gap
 		else:
 			target_position.y += gap
 
-	print("target_position = ", target_position)
+	#print("target_position = ", target_position)
 
 	room.set_pos(target_position)
 	_collision_matrice.add_room_in_matrice(room)
 		
-	print("room position = ", room.get_pos())
+	#print("room position = ", room.get_pos())
 	
 	
 
@@ -317,7 +317,7 @@ func _ready():
 	#_generate_dungeon(1000,3, 6400)
 	
 	#get_node("/root/game/player").queue_free()
-	_generate_dungeon_skeleton(20, 100, 6400)
+	_generate_dungeon_skeleton(100, 100, 6400)
 	#var sorted_array = _sort_room_by_distance_from_origin(_room_list)
 	#_print_distance_in_array(sorted_array)
 	_draw_room_with_floor()

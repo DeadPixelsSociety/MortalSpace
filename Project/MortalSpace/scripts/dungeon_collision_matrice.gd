@@ -41,13 +41,9 @@ func _get_matrice_y_index(room, target):
 	return Vector2(start_range_y, end_range_y)
 
 func get_collision_gap_room_to_room(room_to_move, target, room_already_placed, direction, x_or_y):
-	print("collision gap room to room")
 	var room_to_move_size = room_to_move.get_vector_size() * room_script.TILE_SIZE
-	print("collision gap room to room")
 	var room_placed_pos = room_already_placed.get_pos()
-	print("collision gap room to room")
 	var room_placed_size = room_already_placed.get_vector_size() * room_script.TILE_SIZE
-	print("collision gap room to room")
 	var gap = 0
 	
 	
@@ -67,24 +63,16 @@ func get_collision_gap_room_to_room(room_to_move, target, room_already_placed, d
 			else:
 				gap = - room_to_move_size.y - (target.y - room_placed_pos.y)
 	
-	print("end of collision gap room to room")
-	
 	return gap 
 
 func get_collision_gap( i, j, room, target, direction, x_or_y):
 	var gap = 0
 	var k = 0
-	_matrice[i]
 	var room_number_to_test = _matrice[i][j].size()
 	var room_already_placed = null
 	
-	print("matrice size = ", _matrice.size())
-	print("size line ", i, " = ", _matrice[i].size())
-	print("room_number_to_test in ", i, ", ", j, " = ", room_number_to_test)
-	
 	while(k < room_number_to_test and 0 == gap):
 		room_already_placed = _matrice[i][j].get_room_with_index(k)
-		print("_matrice[i][j].get_room_with_index(k) = ", room_already_placed)
 		gap = get_collision_gap_room_to_room(room, target, room_already_placed, direction, x_or_y)
 		k += 1 
 	
@@ -99,6 +87,8 @@ func get_new_gap(room, target_position, direction, x_or_y):
 	var j = y_index.x
 	
 	while(0 == gap and i < x_index.y):
+		
+		j=0
 		while(0 == gap and j < y_index.y):
 		
 			gap = get_collision_gap(i, j, room, target_position, direction, x_or_y)
@@ -112,16 +102,10 @@ func add_room_in_matrice(room):
 	var x_index = _get_matrice_x_index(room, room.get_pos())
 	var y_index = _get_matrice_y_index(room, room.get_pos())
 
-	print("Ajout de salle dans la matrice de collision du donjon")
-
-	print("x_index = ", x_index)
-	print("y_index = ", y_index)
-
 	for i in range(x_index.x, x_index.y):
 		for j in range(y_index.x, y_index.y):
-			print("On push back ! ")
+			#print("Ajout dans la case ", i, ", ", j)
 			_matrice[i][j].push_back(room)
-			print("new size with the push back = ", _matrice[i][j].size())
 
 	pass
 
