@@ -5,6 +5,8 @@ extends Node2D
 # var a=2
 # var b="textvar"
 
+var _room_graph_node_class = preload("res://scripts/room_graph_node.gd")
+
 const TILE_SIZE = 64
 
 var _size = Vector2(0.0, 0.0)
@@ -12,6 +14,7 @@ var _floor_tile = 0
 var _wall_corner_tile = 1 #3 In reality it is 3 but I use one in this case to test the dungeon creation
 var _wall_tile = 1 #2 In reality it is 2 but I use one in this case to test the dungeon creation
 
+var _neighbors = _room_graph_node_class.new()
 
 func set_size(x, y):
 	_size.x = x
@@ -65,6 +68,9 @@ func add_collision_shape():
 
 func remove_collision_shape():
 	clear_shapes()
+
+func add_neighbor(room):
+	_neighbors.add_neighbor(room)
 
 func _ready():
 	pass

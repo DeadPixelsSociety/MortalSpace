@@ -4,8 +4,10 @@ extends Node
 var room_scene = preload("res://scenes/room.scn")
 var room_script = preload("res://scripts/room.gd")
 var dungeon_collision_matrice = preload("res://scripts/dungeon_collision_matrice.gd")
+var room_graph = preload("res://scripts/room_graph.gd")
 
 var _collision_matrice = null
+var _room_graph = null
 
 const EPSILON = 0.00001 #Arbitrary number
 
@@ -302,6 +304,13 @@ func _add_wall_to_rooms():
 func get_starting_point():
 	return _room_scene_list[0].get_pos()
 
+func _create_neighborhood():
+	var _room_scene_list_size = _room_scene_list.size()
+	
+	for i in range(0, _room_scene_list_size):
+		_collision_matrice.get_neighbors(_room_scene_list[i])
+	
+
 ###############################################################################
 func _ready():
 	"""var room_size_x = 0.0
@@ -324,4 +333,6 @@ func _ready():
 	_rooms_accretion()
 	#_clean_kinematic()
 	_add_wall_to_rooms()
+	_create_neighborhood()
+	
 	pass

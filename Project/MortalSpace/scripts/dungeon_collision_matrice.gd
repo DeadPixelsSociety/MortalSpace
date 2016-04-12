@@ -112,6 +112,21 @@ func add_room_in_matrice(room):
 func get_size_at(i, j):
 	return _matrice[i][j].size()
 
+func get_neighbors(room):
+	var x_index = null
+	var y_index = null
+	var end_room = room.get_pos() + room.get_vector_size()
+	var list_size = 0
+	
+	x_index = _get_matrice_x_index(room, end_room)
+	y_index = _get_matrice_y_index(room, end_room)
+	
+	for i in range(x_index.x, x_index.y):
+		for j in range(y_index.x, y_index.y):
+			list_size = _matrice[i][j].size()
+			for k in range(0, list_size):
+				room.add_neighbor(_matrice[i][j].get_room_with_index(k))
+
 func _init():
 	
 	var tab_temp = null
