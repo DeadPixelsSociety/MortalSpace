@@ -311,6 +311,20 @@ func _create_neighborhood():
 		_collision_matrice.get_neighbors(_room_scene_list[i])
 	
 
+#TODO finir la fonction de mise en place des portes entre deux pieces
+func _place_door(room_1, room_2):
+	var door_position = 0
+	var door_intervalle = 0
+	
+	if(room_1.get_pos().x == room_2.get_pos().x + room_2.get_vect_size().x):
+		pass
+	if(room_1.get_pos().x + room_1.get_vect_size().x == room_2.get_pos().x):
+		pass
+	if(room_1.get_pos().y == room_2.get_pos().y + room_2.get_vect_size().y):
+		pass
+	if(room_1.get_pos().y + room_1.get_vect_size().y == room_2.get_pos().y):
+		pass
+
 ###############################################################################
 func _ready():
 	"""var room_size_x = 0.0
