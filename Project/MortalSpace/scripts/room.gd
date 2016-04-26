@@ -8,6 +8,7 @@ extends Node2D
 var _room_graph_node_class = preload("res://scripts/room_graph_node.gd")
 
 const TILE_SIZE = 64
+const DOOR_INTERVALLE = 3 * TILE_SIZE
 
 var _size = Vector2(0.0, 0.0)
 var _floor_tile = 0
@@ -31,7 +32,7 @@ func set_floor_tile(tile_number):
 	_floor_tile = tile_number
 
 func _create_room_floor():
-	print("tileset name = ", self.get_node("room_map").get_tileset().get_name())
+	#print("tileset name = ", self.get_node("room_map").get_tileset().get_name())
 	for x in range(_size.x):
 		for y in range(_size.y):
 			self.get_node("room_map").set_cell(x, y, _floor_tile)
@@ -57,6 +58,10 @@ func add_wall():
 func generate_room():
 	_create_room_floor()
 
+#pixel unit
+func get_vector_size_in_px():
+	return _size * TILE_SIZE
+
 #tile unit
 func get_vector_size():
 	return _size
@@ -71,6 +76,55 @@ func remove_collision_shape():
 
 func add_neighbor(room):
 	_neighbors.add_neighbor(room)
+
+func get_neighborhood():
+	return _neighbors
+
+func is_connected_with_at_least_n_space(room_1, room_2, n_space):
+	var first_segment_point   = 0
+	var second_segment_point = 0 
+
+	if(   room_1.get_pos().x == room_2.get_pos().x + room_2.get_vector_size_in_px().x
+	   or room_1.get_pos().x + room_1.get_vector_size_in_px().x == room_2.get_pos().x):
+		first_segment_point  = max(room_1.get_pos().y, room_2.get_pos().y)
+		second_segment_point = min(room_1.get_pos().y + room_1.get_vector_size_in_px().y, room_2.get_pos().y + room_2.get_vector_size_in_px().y)
+	else:
+		if(   room_1.get_pos().y == room_2.get_pos().y + room_2.get_vector_size_in_px().y 
+		   or room_1.get_pos().y + room_1.get_vector_size_in_px().y == room_2.get_pos().y):
+			first_segment_point  = max(room_1.get_pos().x, room_2.get_pos().x)
+			second_segment_point = min(room_1.get_pos().x + room_1.get_vector_size_in_px().x, room_2.get_pos().x + room_2.get_vector_size_in_px().x)
+	
+	return second_segment_point - first_segment_point >= n_space * TILE_SIZE
+
+func create_door(x1, x2, y1, y2):
+	
+	print("x1 = ", x1, "| x2 = ",x2, "| y1 = ",y1, "| y2 = ",y2)
+	
+	x1 = (x1 - self.get_pos().x)/TILE_SIZE
+	x2 = (x2 - self.get_pos().x)/TILE_SIZE
+	y1 = (y1 - self.get_pos().y)/TILE_SIZE
+	y2 = (y2 - self.get_pos().y)/TILE_SIZE
+	
+	
+	if(x1 == x2):
+		if(x1 == self.get_pos().x + _size.x):
+			x1 -= 1
+		else:
+			x2 += 1 
+	else:
+		if(y1 == self.get_pos().y + _size.y):
+			y1 -= 1
+		else:
+			y2 += 1
+	
+	for i in range(x1, x2):
+		for j in range(y1, y2):
+			print("On place des portes, on place des portes")
+			self.get_node("room_map").set_cell(x1+i, y1+j, _floor_tile)
+	
+
+func get_neighbor_at_index(index):
+	return _neighbors.get_neighbor_at_index(index)
 
 func _ready():
 	pass

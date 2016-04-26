@@ -309,21 +309,19 @@ func _create_neighborhood():
 	
 	for i in range(0, _room_scene_list_size):
 		_collision_matrice.get_neighbors(_room_scene_list[i])
-	
 
-#TODO finir la fonction de mise en place des portes entre deux pieces
-func _place_door(room_1, room_2):
-	var door_position = 0
-	var door_intervalle = 0
+func _add_doors_to_rooms():
+	var room_list_size = _room_list.size()
+	var room_neighborhood_liste_size = 0
 	
-	if(room_1.get_pos().x == room_2.get_pos().x + room_2.get_vect_size().x):
-		pass
-	if(room_1.get_pos().x + room_1.get_vect_size().x == room_2.get_pos().x):
-		pass
-	if(room_1.get_pos().y == room_2.get_pos().y + room_2.get_vect_size().y):
-		pass
-	if(room_1.get_pos().y + room_1.get_vect_size().y == room_2.get_pos().y):
-		pass
+	for i in range(room_list_size):
+		room_neighborhood_liste_size = _room_scene_list[i].get_neighborhood().size()
+		#WARING, each time we add a connection, we decrise noeighborhood size.
+		while(room_neighborhood_liste_size != 0):
+			_room_scene_list[i].get_neighborhood().add_connection_with_door(_room_scene_list[i], _room_scene_list[i].get_neighbor_at_index(0))
+			room_neighborhood_liste_size = _room_scene_list[i].get_neighborhood().size()
+			
+		
 
 ###############################################################################
 func _ready():
@@ -348,5 +346,6 @@ func _ready():
 	#_clean_kinematic()
 	_add_wall_to_rooms()
 	_create_neighborhood()
+	_add_doors_to_rooms()
 	
 	pass
