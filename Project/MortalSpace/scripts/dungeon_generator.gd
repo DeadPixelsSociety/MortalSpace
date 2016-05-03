@@ -311,7 +311,7 @@ func _create_neighborhood():
 		_collision_matrice.get_neighbors(_room_scene_list[i])
 
 func _add_doors_to_rooms():
-	var room_list_size = _room_list.size()
+	var room_list_size = _room_scene_list.size()
 	var room_neighborhood_liste_size = 0
 	
 	for i in range(room_list_size):

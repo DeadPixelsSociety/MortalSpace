@@ -8,8 +8,6 @@ extends Node
 var room_script = preload("res://scripts/room.gd")
 var room_list = preload("res://scripts/room_list.gd")
 
-const DOOR_SIZE = 3 #Tile
-
 const SQUARE_SIZE = 20
 const MATRICE_SIZE = 200
 
@@ -127,7 +125,7 @@ func get_neighbors(room):
 		for j in range(y_index.x, y_index.y):
 			list_size = _matrice[i][j].size()
 			for k in range(0, list_size):
-				if(room.is_connected_with_at_least_n_space(room, _matrice[i][j].get_room_with_index(k), DOOR_SIZE)):
+				if(room.is_connected_with_at_least_n_space(room, _matrice[i][j].get_room_with_index(k), room_script.DOOR_SIZE)):
 					room.add_neighbor(_matrice[i][j].get_room_with_index(k))
 
 func _init():

@@ -8,7 +8,9 @@ extends Node2D
 var _room_graph_node_class = preload("res://scripts/room_graph_node.gd")
 
 const TILE_SIZE = 64
-const DOOR_INTERVALLE = 3 * TILE_SIZE
+
+const DOOR_SIZE = 2 #Tile
+const DOOR_INTERVALLE = DOOR_SIZE * TILE_SIZE
 
 var _size = Vector2(0.0, 0.0) #Tile unit
 var _floor_tile = 0
@@ -95,13 +97,9 @@ func is_connected_with_at_least_n_space(room_1, room_2, n_space):
 			first_segment_point  = max(room_1.get_pos().x, room_2.get_pos().x)
 			second_segment_point = min(room_1.get_pos().x + room_1.get_vector_size_in_px().x, room_2.get_pos().x + room_2.get_vector_size_in_px().x)
 	
-	return second_segment_point - first_segment_point >= n_space * TILE_SIZE
+	return second_segment_point - first_segment_point >= (n_space + 2) * TILE_SIZE
 
 func create_door(x1, x2, y1, y2):
-	
-	print("We put door in ", self)
-	
-	#print("quadrant tilempa size = ", self.get_node("room_map"). get_quadrant_size())
 	
 	print("x1 = ", x1, "| x2 = ",x2, "| y1 = ",y1, "| y2 = ",y2)
 	
@@ -122,7 +120,8 @@ func create_door(x1, x2, y1, y2):
 			x1 = _size.x - 1 
 			x2 = _size.x
 		else:
-			x2 = 1 
+			x1 = 0
+			x2 = 1
 	else:
 		x1 += 1
 		x2 += 1
@@ -130,13 +129,12 @@ func create_door(x1, x2, y1, y2):
 			y1 = _size.y - 1
 			y2 = _size.y
 		else: 
+			y1 = 0
 			y2 = 1
 	
 	for i in range(x1, x2):
 		for j in range(y1, y2):
-			if( (y1 != _size.y -1 or (i != _size.x-1 and i != 0)) and (x1 != _size.x-1 or (j != _size.y-1 and j != 0))
-				and (y1 != 0 or (i != _size.x-1 and i != 0)) and (x1 != 0 or (j != _size.y-1 and j != 0))):
-				self.get_node("room_map").set_cell(i, j, _floor_tile)
+			self.get_node("room_map").set_cell(i, j, _floor_tile)
 	
 	#print("quadrant tilempa size = ", self.get_node("room_map").get_quadrant_size())
 
