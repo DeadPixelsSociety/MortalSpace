@@ -338,7 +338,7 @@ func _ready():
 	#_generate_dungeon(1000,3, 6400)
 	
 	#get_node("/root/game/player").queue_free()
-	_generate_dungeon_skeleton(100, 100, 6400)
+	_generate_dungeon_skeleton(2, 100, 6400)
 	#var sorted_array = _sort_room_by_distance_from_origin(_room_list)
 	#_print_distance_in_array(sorted_array)
 	_draw_room_with_floor()
