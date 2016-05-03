@@ -41,7 +41,7 @@ func go_to_dungeon(dungeon_type, dungeon_scene_path = ""):
 
 	var dungeon_instance = dungeon.instance()
 	add_child(dungeon_instance)
-	self.get_node("../player").set_pos(dungeon_instance.get_starting_point())
+	self.get_node("../player").set_pos(dungeon_instance.get_starting_point() + Vector2(128,128))
 	old_child.queue_free()
 	
 	

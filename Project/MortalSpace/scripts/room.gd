@@ -12,8 +12,8 @@ const DOOR_INTERVALLE = 3 * TILE_SIZE
 
 var _size = Vector2(0.0, 0.0) #Tile unit
 var _floor_tile = 0
-var _wall_corner_tile = 1 #3 In reality it is 3 but I use one in this case to test the dungeon creation
-var _wall_tile = 1 #2 In reality it is 2 but I use one in this case to test the dungeon creation
+var _wall_corner_tile = 3 #3 In reality it is 3 but I use one in this case to test the dungeon creation
+var _wall_tile = 2 #2 In reality it is 2 but I use one in this case to test the dungeon creation
 
 var _neighbors = _room_graph_node_class.new()
 
@@ -101,6 +101,8 @@ func create_door(x1, x2, y1, y2):
 	
 	print("We put door in ", self)
 	
+	#print("quadrant tilempa size = ", self.get_node("room_map"). get_quadrant_size())
+	
 	print("x1 = ", x1, "| x2 = ",x2, "| y1 = ",y1, "| y2 = ",y2)
 	
 	x1 = (x1 - self.get_pos().x)/TILE_SIZE
@@ -125,18 +127,18 @@ func create_door(x1, x2, y1, y2):
 		x1 += 1
 		x2 += 1
 		if(y1 == _size.y):
-			y1 = _size.y - 1 / 2
+			y1 = _size.y - 1
 			y2 = _size.y
 		else: 
 			y2 = 1
 	
-	print("x1 = ", x1, "| x2 = ",x2, "| y1 = ",y1, "| y2 = ",y2)
-	
 	for i in range(x1, x2):
 		for j in range(y1, y2):
-			print(i, " | ", j)
-			self.get_node("room_map").set_cell(x1+i, y1+j, _floor_tile)
+			if( (y1 != _size.y -1 or (i != _size.x-1 and i != 0)) and (x1 != _size.x-1 or (j != _size.y-1 and j != 0))
+				and (y1 != 0 or (i != _size.x-1 and i != 0)) and (x1 != 0 or (j != _size.y-1 and j != 0))):
+				self.get_node("room_map").set_cell(i, j, _floor_tile)
 	
+	#print("quadrant tilempa size = ", self.get_node("room_map").get_quadrant_size())
 
 func get_neighbor_at_index(index):
 	return _neighbors.get_neighbor_at_index(index)
